@@ -1,0 +1,39 @@
+{
+	"absences": [
+		{
+			"id": 1,
+			"studentName": "Charlie Brown",
+			"date": "15/05/2023",
+			"className": "Quantum Mechanics",
+			"reason": "No reason provided"
+		},
+		{
+			"id": 2,
+			"studentName": "Student User",
+			"date": "12/05/2023",
+			"className": "Molecular Biology",
+			"reason": "No reason provided"
+		},
+		{
+			"id": 3,
+			"studentName": "Alice Johnson",
+			"date": "10/05/2023",
+			"className": "Data Structures",
+			"reason": "No reason provided"
+		},
+		{
+			"id": 4,
+			"studentName": "Bob Smith",
+			"date": "05/05/2023",
+			"className": "Calculus",
+			"reason": "Family emergency"
+		},
+		{
+			"id": 5,
+			"studentName": "Student User",
+			"date": "02/05/2023",
+			"className": "Biology 101",
+			"reason": "Doctor appointment"
+		}
+	]
+}
