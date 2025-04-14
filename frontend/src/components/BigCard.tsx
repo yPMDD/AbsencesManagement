@@ -1,4 +1,5 @@
 import CourseAbsenceCard from "../components/CoursesAbsenceCard.tsx";
+
 const BigCard = () => {
 	const courseAbsenceData = [
 		{

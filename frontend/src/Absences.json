@@ -1,0 +1,74 @@
+{
+	"absences": [
+		{
+			"date": "01/05/2023",
+			"student": "Alice Johnson",
+			"studentId": "$1001",
+			"course": "Programming 101",
+			"reason": "Medical appointment"
+		},
+		{
+			"date": "10/05/2023",
+			"student": "Alice Johnson",
+			"studentId": "$1001",
+			"course": "Data Structures",
+			"reason": "—"
+		},
+		{
+			"date": "05/05/2023",
+			"student": "Bob Smith",
+			"studentId": "$1002",
+			"course": "Calculus",
+			"reason": "Family emergency"
+		},
+		{
+			"date": "15/05/2023",
+			"student": "Charlie Brown",
+			"studentId": "$1003",
+			"course": "Quantum Mechanics",
+			"reason": "—"
+		},
+		{
+			"date": "02/05/2023",
+			"student": "Student User",
+			"studentId": "$1005",
+			"course": "Biology 101",
+			"reason": "Doctor appointment"
+		},
+		{
+			"date": "12/05/2023",
+			"student": "Student User",
+			"studentId": "$1005",
+			"course": "Molecular Biology",
+			"reason": "—"
+		},
+		{
+			"date": "08/05/2023",
+			"student": "David Wilson",
+			"studentId": "$1006",
+			"course": "Organic Chemistry",
+			"reason": "Personal reasons"
+		},
+		{
+			"date": "01/05/2023",
+			"student": "Alice Johnson",
+			"studentId": "$1001",
+			"course": "Programming 101",
+			"reason": "Medical appointment"
+		},
+		{
+			"date": "18/05/2023",
+			"student": "Emma Davis",
+			"studentId": "$1007",
+			"course": "Linear Algebra",
+			"reason": "—"
+		},
+		{
+			"date": "22/05/2023",
+			"student": "Frank Miller",
+			"studentId": "$1008",
+			"course": "Physical Education",
+			"reason": "Sports competition"
+		}
+	]
+}
