@@ -1,14 +1,24 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ModalStudents from "../components/ModalStudents";
+import absenceData from "../Absences.json";
 import { useState } from "react";
+
+interface AbsenceRecord {
+	date: string;
+	student: string;
+	studentId: string;
+	course: string;
+	reason: string;
+}
 
 const Students = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const absences: AbsenceRecord[] = absenceData.absences;
 	return (
 		<>
 			<Header />
-			<div className="p-4 ml-80 mr-80">
+			<div className="p-4 ml-80 mt-20 mr-80">
 				<div className="flex gap-80">
 					<div className=" pt-4 pb-4">
 						<h1 className="text-2xl font-bold mb-2 ">Student Management</h1>
@@ -52,7 +62,55 @@ const Students = () => {
 					isOpen={isModalOpen}
 					onClose={() => setIsModalOpen(false)}
 				/>
+				<div className=" overflow-x-auto rounded-lg shadow   ">
+					<table className="min-w-full divide-y divide-gray-200  ">
+						<thead>
+							<tr className="bg-green-200 bg-opacity-25 ">
+								<th className=" px-4 py-2 text-left text-sm text-green-900 font-semibold">
+									Student ID
+								</th>
+								<th className=" px-4 py-2 text-left text-sm text-green-900 font-semibold">
+									Name
+								</th>
+
+								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+									Email
+								</th>
+								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+									Program
+								</th>
+								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+									Actions
+								</th>
+							</tr>
+						</thead>
+						<tbody className="divide-y divide-gray-200 text-sm  ">
+							{absences.map((absence) => (
+								<tr className="hover:bg-gray-100">
+									<td className="  p-3 ">{absence.studentId}</td>
+									<td className="  p-3 font-semibold ">{absence.student}</td>
+									<td className="  p-3  ">{absence.course}</td>
+									<td className=" p-3 ">{absence.reason}</td>
+									<td className=" p-3 ">
+										<div className="flex space-x-4">
+											<button className="border bg-white hover:bg-green-100 border-green-600 border-opacity-40 text-green-600 font-medium py-[6px] px-4 rounded">
+												View Absences
+											</button>
+											<button className="border bg-white hover:bg-red-100 border-red-300 text-red-500 font-medium py-[6px] px-4 rounded">
+												Delete
+											</button>
+										</div>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+				<p className="mt-4 text-sm text-gray-600">
+					Showing {absences.length} of {absences.length} absences
+				</p>
 			</div>
+
 			<Footer />
 		</>
 	);

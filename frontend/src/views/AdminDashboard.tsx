@@ -9,12 +9,12 @@ import RecordCard from "../components/RecordCard.tsx";
 
 const Dashboard = () => {
 	return (
-		<>
+		<div>
 			<Header />
-			<p className="font-bold text-2xl text-center mx-auto max-w-prose p-8">
+			<p className="font-bold mt-20 text-2xl text-center mx-auto max-w-prose p-8">
 				Administrator Dashboard
 			</p>
-			<div className=" flex flex-wrap gap-10 mr-80 ml-80 p-4 ">
+			<div className=" flex flex-wrap gap-10 mr-80 ml-80 p-4  ">
 				<Card label="Total students" number="279" />
 				<Card label="Total absences" number="89" />
 				<Card label="Students with Absences" number="60" />
@@ -32,7 +32,7 @@ const Dashboard = () => {
 			</div>
 			<div className="p-20"></div>
 			<Footer />
-		</>
+		</div>
 	);
 };
 

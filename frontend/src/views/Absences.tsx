@@ -21,7 +21,7 @@ const Absences = () => {
 			<Header />
 
 			<div className="p-4 ml-80 mr-80">
-				<div className="flex gap-80">
+				<div className="flex mt-20 gap-80">
 					<div className=" pt-4 pb-4">
 						<h1 className="text-2xl font-bold mb-2 ">Absence Management</h1>
 						<p className="mb-6">Record and track student absences</p>
