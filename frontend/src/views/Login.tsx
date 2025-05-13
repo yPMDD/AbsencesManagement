@@ -1,5 +1,18 @@
 import Footer from "../components/Footer";
+import { useState } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi"; // Import eye icons from react-icons
 const Login = () => {
+	const [isFocused, setIsFocused] = useState(false);
+	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
+
+	const handleFocus = () => {
+		setIsFocused(true);
+	};
+
+	const togglePasswordVisibility = () => {
+		setShowPassword(!showPassword);
+	};
 	return (
 		<>
 			<div className="flex min-h-screen items-center justify-center px-6 py-12 lg:px-8">
@@ -25,7 +38,7 @@ const Login = () => {
 									<select
 										name="city"
 										id="city"
-										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 focus:outline-green-200 focus:ring-1 focus:ring-green-200 sm:text-sm/6"
+										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									>
 										<option disabled selected>
 											Choisir une ville
@@ -52,7 +65,7 @@ const Login = () => {
 										type="email"
 										required
 										autoComplete="email"
-										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 focus:outline-green-200 focus:ring-1 focus:ring-green-200 sm:text-sm/6"
+										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									/>
 								</div>
 							</div>
@@ -68,14 +81,36 @@ const Login = () => {
 									<div className="text-sm"></div>
 								</div>
 								<div className="mt-2">
-									<input
-										id="password"
-										name="password"
-										type="password"
-										required
-										autoComplete="current-password"
-										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 focus:outline-green-200 focus:ring-1 focus:ring-green-200 sm:text-sm/6"
-									/>
+									<div
+										className={`border rounded flex p-1 ${
+											isFocused ? "border-green-600" : "border-gray-300"
+										}`}
+									>
+										<input
+											value={password}
+											type={showPassword ? "text" : "password"}
+											name="mdp"
+											onChange={(e) => setPassword(e.target.value)}
+											onFocus={handleFocus}
+											onBlur={() => setIsFocused(false)}
+											placeholder="Enter Student Password"
+											className="p-2 outline-none text-sm border-none rounded border-gray-300 w-full"
+										/>
+										<button
+											type="button"
+											onClick={togglePasswordVisibility}
+											className="p-2 text-gray-600 hover:text-gray-800 focus:outline-none"
+											aria-label={
+												showPassword ? "Hide password" : "Show password"
+											}
+										>
+											{showPassword ? (
+												<FiEyeOff size={18} />
+											) : (
+												<FiEye size={18} />
+											)}
+										</button>
+									</div>
 								</div>
 							</div>
 

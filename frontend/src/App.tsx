@@ -13,7 +13,7 @@ function App() {
 			<Routes>
 				<Route path="/ADashboard" element={<AdminDashboard />} />
 				<Route path="/Students" element={<Students />} />
-				<Route path="/Login" element={<Login />} />
+				<Route path="/" element={<Login />} />
 				<Route path="/Absences" element={<Absences />} />
 				<Route path="/SDashboard" element={<SDashboard />} />
 				<Route path="/SProfile" element={<SProfile />} />

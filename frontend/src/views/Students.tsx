@@ -1,20 +1,31 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ModalStudents from "../components/ModalStudents";
-import absenceData from "../Absences.json";
+import absenceData from "../studentAbsences.json";
 import { useState } from "react";
+import SearchIcon from "../ui/SearchIcon";
 
 interface AbsenceRecord {
+	id: string;
+	studentName: string;
 	date: string;
-	student: string;
-	studentId: string;
-	course: string;
-	reason: string;
+	className: string;
+	email: string;
 }
 
 const Students = () => {
+	const [searchTerm, setSearchTerm] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const absences: AbsenceRecord[] = absenceData.absences;
+
+	const allAbsences: AbsenceRecord[] = absenceData?.absences || [];
+	const filteredAbsences = allAbsences.filter((absence) => {
+		const searchText = searchTerm.toLowerCase();
+		return (
+			absence.studentName.toLowerCase().includes(searchText) ||
+			absence.className.toLowerCase().includes(searchText)
+		);
+	});
 	return (
 		<>
 			<Header />
@@ -28,25 +39,14 @@ const Students = () => {
 						<div className="relative mt-7">
 							<div>
 								<input
+									value={searchTerm}
+									onChange={(e) => setSearchTerm(e.target.value)}
 									placeholder="Search Student..."
 									className="input  text-sm border border-gray-300 outline-none  focus:outline-green-600 px-4 py-3 rounded w-60 h-10 transition-colors duration-200  "
 									name="search"
 									type="search"
 								/>
-								<svg
-									className="size-5 absolute top-3 right-3 text-gray-500"
-									stroke="currentColor"
-									stroke-width="1.5"
-									viewBox="0 0 24 24"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-										stroke-linejoin="round"
-										stroke-linecap="round"
-									></path>
-								</svg>
+								<SearchIcon />
 							</div>
 						</div>
 						<button
@@ -85,24 +85,34 @@ const Students = () => {
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-200 text-sm  ">
-							{absences.map((absence) => (
-								<tr className="hover:bg-gray-100">
-									<td className="  p-3 ">{absence.studentId}</td>
-									<td className="  p-3 font-semibold ">{absence.student}</td>
-									<td className="  p-3  ">{absence.course}</td>
-									<td className=" p-3 ">{absence.reason}</td>
-									<td className=" p-3 ">
-										<div className="flex space-x-4">
-											<button className="border bg-white hover:bg-green-100 border-green-600 border-opacity-40 text-green-600 font-medium py-[6px] px-4 rounded">
-												View Absences
-											</button>
-											<button className="border bg-white hover:bg-red-100 border-red-300 text-red-500 font-medium py-[6px] px-4 rounded">
-												Delete
-											</button>
-										</div>
+							{filteredAbsences.length > 0 ? (
+								filteredAbsences.map((absence) => (
+									<tr key={`${absence.id}`} className="hover:bg-gray-100">
+										<td className="  p-3 ">{absence.id}</td>
+										<td className="  p-3 font-semibold ">
+											{absence.studentName}
+										</td>
+										<td className="  p-3  ">{absence.email}</td>
+										<td className=" p-3 ">{absence.className}</td>
+										<td className=" p-3 ">
+											<div className="flex space-x-4">
+												<button className="border bg-white hover:bg-green-100 border-green-600 border-opacity-40 text-green-600 font-medium py-[6px] px-4 rounded">
+													View Absences
+												</button>
+												<button className="border bg-white hover:bg-red-100 border-red-300 text-red-500 font-medium py-[6px] px-4 rounded">
+													Delete
+												</button>
+											</div>
+										</td>
+									</tr>
+								))
+							) : (
+								<tr>
+									<td colSpan={5} className="text-center p-4">
+										No students found matching "{searchTerm}"
 									</td>
 								</tr>
-							))}
+							)}
 						</tbody>
 					</table>
 				</div>

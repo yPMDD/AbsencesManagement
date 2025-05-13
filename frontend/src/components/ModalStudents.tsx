@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PasswordInput from "./PasswordInput";
 
 interface ModalProps {
 	isOpen: boolean;
@@ -90,12 +91,7 @@ const Modal = (props: ModalProps) => {
 						Password
 					</label>
 					<br />
-					<input
-						type="password"
-						name="mdp"
-						placeholder="Enter Student Password"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
-					/>
+					<PasswordInput />
 					<br />
 				</form>
 				<div className="flex justify-between mt-6">

@@ -1,6 +1,7 @@
 {
 	"absences": [
 		{
+			"id": "1",
 			"date": "01/05/2023",
 			"student": "Alice Johnson",
 			"studentId": "$1001",
@@ -8,6 +9,7 @@
 			"reason": "Medical appointment"
 		},
 		{
+			"id": "2",
 			"date": "10/05/2023",
 			"student": "Alice Johnson",
 			"studentId": "$1001",
@@ -15,6 +17,7 @@
 			"reason": "—"
 		},
 		{
+			"id": "3",
 			"date": "05/05/2023",
 			"student": "Bob Smith",
 			"studentId": "$1002",
@@ -22,6 +25,7 @@
 			"reason": "Family emergency"
 		},
 		{
+			"id": "4",
 			"date": "15/05/2023",
 			"student": "Charlie Brown",
 			"studentId": "$1003",
@@ -29,6 +33,7 @@
 			"reason": "—"
 		},
 		{
+			"id": "5",
 			"date": "02/05/2023",
 			"student": "Student User",
 			"studentId": "$1005",
@@ -36,6 +41,7 @@
 			"reason": "Doctor appointment"
 		},
 		{
+			"id": "6",
 			"date": "12/05/2023",
 			"student": "Student User",
 			"studentId": "$1005",
@@ -43,6 +49,7 @@
 			"reason": "—"
 		},
 		{
+			"id": "7",
 			"date": "08/05/2023",
 			"student": "David Wilson",
 			"studentId": "$1006",
@@ -50,6 +57,7 @@
 			"reason": "Personal reasons"
 		},
 		{
+			"id": "8",
 			"date": "01/05/2023",
 			"student": "Alice Johnson",
 			"studentId": "$1001",
@@ -57,6 +65,7 @@
 			"reason": "Medical appointment"
 		},
 		{
+			"id": "9",
 			"date": "18/05/2023",
 			"student": "Emma Davis",
 			"studentId": "$1007",
@@ -64,6 +73,7 @@
 			"reason": "—"
 		},
 		{
+			"id": "10",
 			"date": "22/05/2023",
 			"student": "Frank Miller",
 			"studentId": "$1008",
