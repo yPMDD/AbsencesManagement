@@ -9,6 +9,18 @@ interface User {
 	picture: string | null;
 }
 
+interface StudentRegistrationData {
+	username: string;
+	email: string;
+	password: string;
+	first_name: string;
+	last_name: string;
+	city?: string;
+	phone_number?: string;
+	matricule: string;
+	major?: string;
+}
+
 interface AuthResponse {
 	authenticated: boolean;
 	user?: User;
@@ -35,6 +47,25 @@ const AuthService = {
 		const csrfToken = getCookie("csrftoken");
 		if (!csrfToken) throw new Error("CSRF token not found in cookies");
 		return csrfToken;
+	},
+	registerStudent: async (
+		studentData: StudentRegistrationData
+	): Promise<{ success: string }> => {
+		const csrfToken = await AuthService.getCsrfToken();
+		try {
+			const response = await api.post("auth/register/student/", studentData, {
+				headers: {
+					"X-CSRFToken": csrfToken,
+				},
+			});
+			return response.data;
+		} catch (error: any) {
+			if (error.response) {
+				// Handle validation errors from the server
+				throw new Error(JSON.stringify(error.response.data));
+			}
+			throw error;
+		}
 	},
 
 	login: async (

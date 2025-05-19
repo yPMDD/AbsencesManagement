@@ -7,6 +7,9 @@ from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializers import StudentRegistrationSerializer
 import json
 
 @require_GET
@@ -49,6 +52,18 @@ def logout_view(request):
         logout(request)
         return JsonResponse({'status': 'success'})
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+class StudentRegistrationView(APIView):
+    def post(self, request):
+        serializer = StudentRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"success": "Student registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 @api_view(['GET'])
 def check_auth_view(request):

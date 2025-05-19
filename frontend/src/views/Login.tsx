@@ -38,7 +38,7 @@ const Login: React.FC = () => {
 				formData.username, // Using matricule as username
 				formData.password
 			);
-
+			console.log("user data:", response);
 			// Redirect based on role
 			if (response.user.role === "Staff") {
 				console.log("Staff user logged in");
@@ -64,14 +64,14 @@ const Login: React.FC = () => {
 					<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 						<img
 							alt="Emsi logo"
-							src="../public/images/emsiLogo.png"
+							src="images/emsiLogo.png"
 							className="mx-auto h-18 w-auto"
 						/>
 					</div>
 
 					<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 						<form onSubmit={handleSubmit} className="space-y-6">
-							<div>
+							{/* <div>
 								<label
 									htmlFor="city"
 									className="block text-sm/6 font-medium text-gray-900"
@@ -79,7 +79,7 @@ const Login: React.FC = () => {
 									Ville
 								</label>
 								<div className="mt-2">
-									{/* <select
+									<select
 										name="city"
 										id="city"
 										value={formData.city}
@@ -95,9 +95,9 @@ const Login: React.FC = () => {
 										<option value="MK">MARRAKECH</option>
 										<option value="TA">TANGER</option>
 										<option value="FS">FES</option>
-									</select> */}
+									</select>
 								</div>
-							</div>
+							</div> */}
 
 							<div>
 								<label
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
 										value={formData.username}
 										onChange={handleChange}
 										required
-										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
+										className="block w-full  outline-none rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-600 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									/>
 								</div>
 							</div>

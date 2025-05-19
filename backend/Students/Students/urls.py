@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.urls import path
 from . import views
+from .views import StudentRegistrationView
 
 urlpatterns = [
     path('api/auth/csrf/', views.get_csrf_token, name='get-csrf'),
     path('api/auth/login/', views.login_view, name='login'),
     path('api/auth/logout/', views.logout_view, name='logout'),
     path('api/auth/check/', views.check_auth_view, name='check-auth'),
+    path('api/auth/register/student/', StudentRegistrationView.as_view(), name='student-registration'),
 ]

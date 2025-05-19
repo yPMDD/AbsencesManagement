@@ -15,8 +15,7 @@ const LogoutButton = () => {
 	const handleLogout = async () => {
 		try {
 			await logout(); // Using useAuth hook
-			// OR if using AuthService directly:
-			// await AuthService.logout();
+
 			navigate("/"); // Redirect to login page
 		} catch (error) {
 			console.error("Logout failed:", error);

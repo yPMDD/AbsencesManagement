@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi"; // Import eye icons from react-icons
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
-const PasswordInput = () => {
+interface PasswordInputProps {
+	onPasswordChange: (password: string) => void;
+	value: string;
+}
+
+const PasswordInput = ({ onPasswordChange, value }: PasswordInputProps) => {
 	const [isFocused, setIsFocused] = useState(false);
-	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
 	const handleFocus = () => {
@@ -25,11 +29,15 @@ const PasswordInput = () => {
 			result += allChars[randomIndex];
 		}
 
-		setPassword(result);
+		onPasswordChange(result);
 	};
 
 	const togglePasswordVisibility = () => {
 		setShowPassword(!showPassword);
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		onPasswordChange(e.target.value);
 	};
 
 	return (
@@ -39,10 +47,10 @@ const PasswordInput = () => {
 			}`}
 		>
 			<input
-				value={password}
+				value={value}
 				type={showPassword ? "text" : "password"}
-				name="mdp"
-				onChange={(e) => setPassword(e.target.value)}
+				name="password"
+				onChange={handleChange}
 				onFocus={handleFocus}
 				onBlur={() => setIsFocused(false)}
 				placeholder="Enter Student Password"
