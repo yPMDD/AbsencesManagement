@@ -8,6 +8,15 @@ interface User {
 	full_name: string;
 	picture: string | null;
 }
+interface Student {
+	id: number;
+	full_name: string;
+	email: string;
+	matricule: string;
+	major: string;
+	city: string;
+	phone_number: string;
+}
 
 interface StudentRegistrationData {
 	username: string;
@@ -48,24 +57,33 @@ const AuthService = {
 		if (!csrfToken) throw new Error("CSRF token not found in cookies");
 		return csrfToken;
 	},
+
+	getStudents: async (): Promise<Student[]> => {
+		const response = await api.get("students/");
+		return response.data;
+	},
+
 	registerStudent: async (
 		studentData: StudentRegistrationData
 	): Promise<{ success: string }> => {
 		const csrfToken = await AuthService.getCsrfToken();
-		try {
-			const response = await api.post("auth/register/student/", studentData, {
-				headers: {
-					"X-CSRFToken": csrfToken,
-				},
-			});
-			return response.data;
-		} catch (error: any) {
-			if (error.response) {
-				// Handle validation errors from the server
-				throw new Error(JSON.stringify(error.response.data));
-			}
-			throw error;
-		}
+
+		const response = await api.post("auth/register/student/", studentData, {
+			headers: {
+				"X-CSRFToken": csrfToken,
+			},
+		});
+		return response.data;
+	},
+	deleteStudent: async (studentId: number): Promise<{ success: string }> => {
+		const csrfToken = await AuthService.getCsrfToken();
+
+		const response = await api.delete(`students/${studentId}/delete/`, {
+			headers: {
+				"X-CSRFToken": csrfToken,
+			},
+		});
+		return response.data;
 	},
 
 	login: async (
@@ -130,4 +148,4 @@ api.interceptors.request.use(async (config) => {
 	return config;
 });
 
-export { AuthService, type User, type AuthResponse };
+export { AuthService, type User, type AuthResponse, type Student };

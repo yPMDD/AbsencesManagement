@@ -1,38 +1,57 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ModalStudents from "../components/ModalStudents";
-import absenceData from "../studentAbsences.json";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchIcon from "../ui/SearchIcon";
+import { AuthService } from "../services/authService";
+import DeleteButton from "../components/DeleteButton";
 
-interface AbsenceRecord {
-	id: string;
-	studentName: string;
-	date: string;
-	className: string;
+interface Student {
+	id: number;
+	matricule: string;
+	full_name: string;
 	email: string;
+	major: string;
 }
 
 const Students = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const absences: AbsenceRecord[] = absenceData.absences;
+	const [students, setStudents] = useState<Student[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
-	const allAbsences: AbsenceRecord[] = absenceData?.absences || [];
-	const filteredAbsences = allAbsences.filter((absence) => {
+	useEffect(() => {
+		const fetchStudents = async () => {
+			try {
+				const data = await AuthService.getStudents();
+				setStudents(data);
+			} catch (error) {
+				console.error("Error fetching students:", error);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+		fetchStudents();
+	}, []);
+
+	const filteredStudents = students.filter((student) => {
 		const searchText = searchTerm.toLowerCase();
 		return (
-			absence.studentName.toLowerCase().includes(searchText) ||
-			absence.className.toLowerCase().includes(searchText)
+			student.full_name.toLowerCase().includes(searchText) ||
+			student.email.toLowerCase().includes(searchText) ||
+			student.matricule.toLowerCase().includes(searchText) ||
+			(student.major && student.major.toLowerCase().includes(searchText))
 		);
 	});
+
 	return (
 		<>
 			<Header />
 			<div className="p-4 ml-80 mt-20 mr-80">
 				<div className="flex gap-80">
-					<div className=" pt-4 pb-4">
-						<h1 className="text-2xl font-bold mb-2 ">Student Management</h1>
+					<div className="pt-4 pb-4">
+						<h1 className="text-2xl font-bold mb-2">Student Management</h1>
 						<p className="mb-6">Manage and track all students</p>
 					</div>
 					<div className="flex gap-4 ml-60">
@@ -42,7 +61,7 @@ const Students = () => {
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									placeholder="Search Student..."
-									className="input  text-sm border border-gray-300 outline-none  focus:outline-green-600 px-4 py-3 rounded w-60 h-10 transition-colors duration-200  "
+									className="input text-sm border border-gray-300 outline-none focus:outline-green-600 px-4 py-3 rounded w-60 h-10 transition-colors duration-200"
 									name="search"
 									type="search"
 								/>
@@ -58,50 +77,56 @@ const Students = () => {
 						</button>
 					</div>
 				</div>
+
 				<ModalStudents
 					isOpen={isModalOpen}
 					onClose={() => setIsModalOpen(false)}
 				/>
-				<div className=" overflow-x-auto rounded-lg shadow   ">
-					<table className="min-w-full divide-y divide-gray-200  ">
+
+				<div className="overflow-x-auto rounded-lg shadow">
+					<table className="min-w-full divide-y divide-gray-200">
 						<thead>
-							<tr className="bg-green-200 bg-opacity-25 ">
-								<th className=" px-4 py-2 text-left text-sm text-green-900 font-semibold">
+							<tr className="bg-green-200 bg-opacity-25">
+								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
 									Student ID
 								</th>
-								<th className=" px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
 									Name
 								</th>
-
-								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
 									Email
 								</th>
-								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
 									Program
 								</th>
-								<th className=" px-4 py-2 text-left text-sm text-green-900  font-semibold">
+								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
 									Actions
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-200 text-sm  ">
-							{filteredAbsences.length > 0 ? (
-								filteredAbsences.map((absence) => (
-									<tr key={`${absence.id}`} className="hover:bg-gray-100">
-										<td className="  p-3 ">{absence.id}</td>
-										<td className="  p-3 font-semibold ">
-											{absence.studentName}
-										</td>
-										<td className="  p-3  ">{absence.email}</td>
-										<td className=" p-3 ">{absence.className}</td>
-										<td className=" p-3 ">
+						<tbody className="divide-y divide-gray-200 text-sm">
+							{isLoading ? (
+								<tr>
+									<td colSpan={5} className="text-center p-4">
+										Loading students...
+									</td>
+								</tr>
+							) : filteredStudents.length > 0 ? (
+								filteredStudents.map((student) => (
+									<tr key={student.id} className="hover:bg-gray-100">
+										<td className="p-3">{student.matricule}</td>
+										<td className="p-3 font-semibold">{student.full_name}</td>
+										<td className="p-3">{student.email}</td>
+										<td className="p-3">{student.major || "-"}</td>
+										<td className="p-3">
 											<div className="flex space-x-4">
 												<button className="border bg-white hover:bg-green-100 border-green-600 border-opacity-40 text-green-600 font-medium py-[6px] px-4 rounded">
 													View Absences
 												</button>
-												<button className="border bg-white hover:bg-red-100 border-red-300 text-red-500 font-medium py-[6px] px-4 rounded">
-													Delete
-												</button>
+												<DeleteButton
+													studentId={student.id}
+													studentName={student.full_name}
+												/>
 											</div>
 										</td>
 									</tr>
@@ -116,11 +141,11 @@ const Students = () => {
 						</tbody>
 					</table>
 				</div>
+
 				<p className="mt-4 text-sm text-gray-600">
-					Showing {absences.length} of {absences.length} absences
+					Showing {filteredStudents.length} of {students.length} students
 				</p>
 			</div>
-
 			<Footer />
 		</>
 	);

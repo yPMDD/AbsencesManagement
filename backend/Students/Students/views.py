@@ -10,6 +10,9 @@ from django.views.decorators.http import require_GET
 from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import StudentRegistrationSerializer
+from .serializers import StudentSerializer
+from .models import Student
+from rest_framework.renderers import JSONRenderer
 import json
 
 @require_GET
@@ -17,6 +20,18 @@ import json
 @ensure_csrf_cookie
 def get_csrf_token(request):
     return JsonResponse({'status': 'CSRF cookie set'})
+
+class StudentDeleteView(APIView):
+    def delete(self, request, student_id):
+        try:
+            student = Student.objects.get(pk=student_id)
+            # Delete both the student profile and the associated user
+            user = student.user
+            student.delete()
+            user.delete()
+            return Response({"success": "Student deleted successfully"}, status=status.HTTP_200_OK)
+        except Student.DoesNotExist:
+            return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
 
 def login_view(request):
     if request.method == 'POST':
@@ -62,6 +77,14 @@ class StudentRegistrationView(APIView):
             return Response({"success": "Student registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class StudentListView(APIView):
+    renderer_classes = [JSONRenderer]
+    def get(self, request):
+        students = Student.objects.all().select_related('user')
+        serializer = StudentSerializer(students, many=True)
+        return Response(serializer.data)
 
 
 

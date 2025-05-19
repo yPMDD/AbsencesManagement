@@ -46,3 +46,19 @@ class StudentRegistrationSerializer(serializers.Serializer):
         )
         
         return student
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='user.get_full_name')
+    email = serializers.CharField(source='user.email')
+    id = serializers.CharField(source='user_id') 
+    
+    class Meta:
+        model = Student
+        fields = ['id', 'matricule', 'full_name', 'email', 'major', 'city', 'phone_number']
+
+    def get_full_name(self, obj):
+        return obj.user.get_full_name()
+
+    def get_email(self, obj):
+        return obj.user.email

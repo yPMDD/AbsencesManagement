@@ -17,6 +17,8 @@ Including another URLconf
 from django.urls import path
 from . import views
 from .views import StudentRegistrationView
+from .views import StudentDeleteView
+from .views import StudentListView
 
 urlpatterns = [
     path('api/auth/csrf/', views.get_csrf_token, name='get-csrf'),
@@ -24,4 +26,6 @@ urlpatterns = [
     path('api/auth/logout/', views.logout_view, name='logout'),
     path('api/auth/check/', views.check_auth_view, name='check-auth'),
     path('api/auth/register/student/', StudentRegistrationView.as_view(), name='student-registration'),
+    path('api/students/<int:student_id>/delete/', StudentDeleteView.as_view(), name='student-delete'),
+    path('api/students/', StudentListView.as_view(), name='student-list'),
 ]
