@@ -1,18 +1,62 @@
 import Footer from "../components/Footer";
-import { useState } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi"; // Import eye icons from react-icons
-const Login = () => {
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthService } from "../services/authService"; // Import your auth service
+import { toast } from "react-toastify"; // For error notifications
+
+const Login: React.FC = () => {
 	const [isFocused, setIsFocused] = useState(false);
-	const [password, setPassword] = useState("");
+	const [formData, setFormData] = useState({
+		username: "",
+		password: "",
+	});
 	const [showPassword, setShowPassword] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 
-	const handleFocus = () => {
-		setIsFocused(true);
+	const handleFocus = () => setIsFocused(true);
+	const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
 	};
 
-	const togglePasswordVisibility = () => {
-		setShowPassword(!showPassword);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoading(true);
+
+		try {
+			// Authenticate with backend
+			const response = await AuthService.login(
+				formData.username, // Using matricule as username
+				formData.password
+			);
+
+			// Redirect based on role
+			if (response.user.role === "Staff") {
+				console.log("Staff user logged in");
+				navigate("/ADashboard");
+			} else if (response.user.role === "student") {
+				console.log("Student user logged in");
+				navigate("/SDashboard");
+			}
+
+			toast.success("Login successful!");
+		} catch (error) {
+			toast.error("Login failed. Please check your credentials.");
+			console.error("Login error:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
+
 	return (
 		<>
 			<div className="flex min-h-screen items-center justify-center px-6 py-12 lg:px-8">
@@ -26,7 +70,7 @@ const Login = () => {
 					</div>
 
 					<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-						<form action="#" method="POST" className="space-y-6">
+						<form onSubmit={handleSubmit} className="space-y-6">
 							<div>
 								<label
 									htmlFor="city"
@@ -35,12 +79,15 @@ const Login = () => {
 									Ville
 								</label>
 								<div className="mt-2">
-									<select
+									{/* <select
 										name="city"
 										id="city"
+										value={formData.city}
+										onChange={handleChange}
+										required
 										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									>
-										<option disabled selected>
+										<option value="" disabled>
 											Choisir une ville
 										</option>
 										<option value="CB">CASABLANCA</option>
@@ -48,23 +95,25 @@ const Login = () => {
 										<option value="MK">MARRAKECH</option>
 										<option value="TA">TANGER</option>
 										<option value="FS">FES</option>
-									</select>
+									</select> */}
 								</div>
 							</div>
+
 							<div>
 								<label
-									htmlFor="email"
+									htmlFor="matricule"
 									className="block text-sm/6 font-medium text-gray-900"
 								>
 									Matricule
 								</label>
 								<div className="mt-2">
 									<input
-										id="email"
-										name="email"
-										type="email"
+										id="matricule"
+										name="username"
+										type="text"
+										value={formData.username}
+										onChange={handleChange}
 										required
-										autoComplete="email"
 										className="block w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-200 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									/>
 								</div>
@@ -78,7 +127,6 @@ const Login = () => {
 									>
 										Mot de passe
 									</label>
-									<div className="text-sm"></div>
 								</div>
 								<div className="mt-2">
 									<div
@@ -87,14 +135,15 @@ const Login = () => {
 										}`}
 									>
 										<input
-											value={password}
+											value={formData.password}
 											type={showPassword ? "text" : "password"}
-											name="mdp"
-											onChange={(e) => setPassword(e.target.value)}
+											name="password"
+											onChange={handleChange}
 											onFocus={handleFocus}
 											onBlur={() => setIsFocused(false)}
-											placeholder="Enter Student Password"
+											required
 											className="p-2 outline-none text-sm border-none rounded border-gray-300 w-full"
+											placeholder="Enter your password"
 										/>
 										<button
 											type="button"
@@ -117,9 +166,12 @@ const Login = () => {
 							<div>
 								<button
 									type="submit"
-									className="flex w-full justify-center rounded-md bg-green-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+									disabled={isLoading}
+									className={`flex w-full justify-center rounded-md bg-green-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-green-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 ${
+										isLoading ? "opacity-70 cursor-not-allowed" : ""
+									}`}
 								>
-									Se connecter
+									{isLoading ? "Connexion en cours..." : "Se connecter"}
 								</button>
 							</div>
 						</form>

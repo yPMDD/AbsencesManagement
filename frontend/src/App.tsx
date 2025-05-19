@@ -1,4 +1,5 @@
 import "./App.css";
+import ProtectedRoute from "./ProtectedRoute";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminDashboard from "./views/AdminDashboard.tsx";
 import Absences from "./views/Absences.tsx";
@@ -11,12 +12,18 @@ function App() {
 	return (
 		<Router>
 			<Routes>
-				<Route path="/ADashboard" element={<AdminDashboard />} />
-				<Route path="/Students" element={<Students />} />
 				<Route path="/" element={<Login />} />
-				<Route path="/Absences" element={<Absences />} />
-				<Route path="/SDashboard" element={<SDashboard />} />
-				<Route path="/SProfile" element={<SProfile />} />
+
+				<Route element={<ProtectedRoute allowedRoles={["Staff"]} />}>
+					<Route path="/ADashboard" element={<AdminDashboard />} />
+					<Route path="/Students" element={<Students />} />
+					<Route path="/Absences" element={<Absences />} />
+				</Route>
+
+				<Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+					<Route path="/SDashboard" element={<SDashboard />} />
+					<Route path="/SProfile" element={<SProfile />} />
+				</Route>
 			</Routes>
 		</Router>
 	);
