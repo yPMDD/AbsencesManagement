@@ -26,6 +26,7 @@ const Modal = (props: ModalProps) => {
 		phone_number: "",
 		matricule: "",
 		major: "",
+		guardianEmail: "",
 	});
 
 	useEffect(() => {
@@ -49,6 +50,7 @@ const Modal = (props: ModalProps) => {
 					phone_number: "",
 					matricule: "",
 					major: "",
+					guardianEmail: "",
 				});
 			}, 300);
 			return () => clearTimeout(timer);
@@ -94,6 +96,7 @@ const Modal = (props: ModalProps) => {
 			setTimeout(() => {
 				props.onClose();
 			}, 2000);
+			window.location.reload();
 		} catch (err) {
 			console.error("Registration error:", err);
 			setError(err instanceof Error ? err.message : "Registration failed");
@@ -119,19 +122,19 @@ const Modal = (props: ModalProps) => {
 					isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-95"
 				}`}
 			>
-				<h2 className="font-semibold text-xl">Record New Student</h2>
+				<h2 className="text-xl font-semibold">Record New Student</h2>
 				<p className="mb-8 text-gray-500 opacity-70">
 					Enter the details for the new student
 				</p>
 
 				{error && (
-					<div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+					<div className="p-2 mb-4 text-red-700 bg-red-100 rounded">
 						{error}
 					</div>
 				)}
 
 				{success && (
-					<div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
+					<div className="p-2 mb-4 text-green-700 bg-green-100 rounded">
 						Student registered successfully!
 					</div>
 				)}
@@ -145,7 +148,7 @@ const Modal = (props: ModalProps) => {
 						type="text"
 						name="first_name"
 						placeholder="Enter Student full name"
-						className="p-3 text-sm border rounded border-gray-200 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-2 text-sm border border-gray-200 rounded focus:outline-green-600"
 						value={formData.first_name}
 						onChange={handleChange}
 						required
@@ -159,26 +162,27 @@ const Modal = (props: ModalProps) => {
 						type="email"
 						name="email"
 						placeholder="Enter Student Email"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-2 text-sm border border-gray-300 rounded focus:outline-green-600"
 						value={formData.email}
 						onChange={handleChange}
 						required
 					/>
 					<br />
-					<label htmlFor="matricule" className="font-semibold">
-						Student ID (Matricule)
+					<label htmlFor="guardianEmail" className="font-semibold">
+						Guardian's Email
 					</label>
 					<br />
 					<input
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
-						type="text"
-						name="matricule"
-						placeholder="Enter Student ID"
-						value={formData.matricule}
+						type="email"
+						name="guardianEmail"
+						placeholder="Enter Guardian's Email"
+						className="w-full p-3 mb-2 text-sm border border-gray-300 rounded focus:outline-green-600"
+						value={formData.guardianEmail}
 						onChange={handleChange}
 						required
 					/>
 					<br />
+
 					<label htmlFor="major" className="font-semibold">
 						Major
 					</label>
@@ -187,7 +191,7 @@ const Modal = (props: ModalProps) => {
 						type="text"
 						name="major"
 						placeholder="Enter Student Major"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-2 text-sm border border-gray-300 rounded focus:outline-green-600"
 						value={formData.major}
 						onChange={handleChange}
 					/>
@@ -200,7 +204,7 @@ const Modal = (props: ModalProps) => {
 						type="text"
 						name="city"
 						placeholder="Enter City"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-2 text-sm border border-gray-300 rounded focus:outline-green-600"
 						value={formData.city}
 						onChange={handleChange}
 					/>
@@ -213,7 +217,7 @@ const Modal = (props: ModalProps) => {
 						type="text"
 						name="phone_number"
 						placeholder="Enter Phone Number"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-2 text-sm border border-gray-300 rounded focus:outline-green-600"
 						value={formData.phone_number}
 						onChange={handleChange}
 					/>
@@ -231,7 +235,7 @@ const Modal = (props: ModalProps) => {
 				<div className="flex justify-between mt-6">
 					<button
 						onClick={props.onClose}
-						className="bg-white border font-sans text-sm font-semibold p-2 rounded w-20 h-10 hover:bg-gray-200 transition-colors duration-300"
+						className="w-20 h-10 p-2 font-sans text-sm font-semibold transition-colors duration-300 bg-white border rounded hover:bg-gray-200"
 						disabled={isLoading}
 					>
 						Cancel
@@ -239,7 +243,7 @@ const Modal = (props: ModalProps) => {
 					<button
 						form="myForm"
 						type="submit"
-						className="bg-green-700 font-sans text-sm font-semibold text-white p-2 rounded w-40 h-10 hover:bg-green-800 transition-colors duration-300 disabled:opacity-50"
+						className="w-40 h-10 p-2 font-sans text-sm font-semibold text-white transition-colors duration-300 bg-green-700 rounded hover:bg-green-800 disabled:opacity-50"
 						disabled={isLoading}
 					>
 						{isLoading ? "Registering..." : "Record new Student"}

@@ -31,6 +31,7 @@ const DeleteButton = ({
 			setError(err instanceof Error ? err.message : "Failed to delete student");
 		} finally {
 			setIsDeleting(false);
+			window.location.reload();
 		}
 	};
 
@@ -49,11 +50,11 @@ const DeleteButton = ({
 				onClose={() => setIsDialogOpen(false)}
 				onConfirm={handleDelete}
 				title="Confirm Deletion"
-				message={`Are you sure you want to delete ${studentName}? This action cannot be undone.`}
+				message={`Are you sure you want to delete ${studentName} ? This action cannot be undone.`}
 				confirmText={isDeleting ? "Deleting..." : "Delete"}
 			/>
 
-			{error && <div className="mt-2 text-red-600 text-sm">{error}</div>}
+			{error && <div className="mt-2 text-sm text-red-600">{error}</div>}
 		</>
 	);
 };

@@ -20,14 +20,22 @@ interface Student {
 
 interface StudentRegistrationData {
 	username: string;
+	guardianEmail: string;
 	email: string;
 	password: string;
 	first_name: string;
 	last_name: string;
 	city?: string;
 	phone_number?: string;
-	matricule: string;
+	matricule?: string;
 	major?: string;
+}
+interface AbsenceData {
+	matricule: string;
+	date: string;
+	class_name: string;
+	reason?: string;
+	full_name?: string;
 }
 
 interface AuthResponse {
@@ -57,12 +65,32 @@ const AuthService = {
 		if (!csrfToken) throw new Error("CSRF token not found in cookies");
 		return csrfToken;
 	},
+	registerAbsence: async (
+		AbsenceData: AbsenceData
+	): Promise<{ success: string }> => {
+		const csrfToken = await AuthService.getCsrfToken();
+		const response = await api.post("absences/register/", AbsenceData, {
+			headers: {
+				"X-CSRFToken": csrfToken,
+			},
+		});
+		console.log("Absence registration response:", response.data);
+		return response.data;
+	},
 
 	getStudents: async (): Promise<Student[]> => {
 		const response = await api.get("students/");
 		return response.data;
 	},
-
+	getAbsences: async (): Promise<{ absences: AbsenceData }> => {
+		const response = await api.get("absences/");
+		console.log("Absences data:", response.data);
+		return response.data;
+	},
+	getAbsencesByStudentId: async (studentId: number): Promise<Student> => {
+		const response = await api.get(`absences/${studentId}/`);
+		return response.data;
+	},
 	registerStudent: async (
 		studentData: StudentRegistrationData
 	): Promise<{ success: string }> => {
@@ -100,6 +128,7 @@ const AuthService = {
 				},
 			}
 		);
+		// console.log("Login response:", response.data);
 		return response.data;
 	},
 

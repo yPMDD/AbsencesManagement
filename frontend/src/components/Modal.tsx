@@ -1,13 +1,29 @@
 import { useState, useEffect } from "react";
+import { AuthService } from "../services/authService"; // Adjust import path as needed
 
 interface ModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 }
 
+interface AbsenceData {
+	matricule: string;
+	date: string;
+	class_name: string;
+	reason?: string; // Optional field
+}
+
 const Modal = (props: ModalProps) => {
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [isVisible, setIsVisible] = useState(false);
+	const [formData, setFormData] = useState<AbsenceData>({
+		matricule: "",
+		date: "",
+		class_name: "",
+		reason: "",
+	});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (props.isOpen) {
@@ -15,10 +31,44 @@ const Modal = (props: ModalProps) => {
 			setTimeout(() => setIsAnimating(true), 10);
 		} else {
 			setIsAnimating(false);
-			const timer = setTimeout(() => setIsVisible(false), 300); // match this to animation duration
+			const timer = setTimeout(() => {
+				setIsVisible(false);
+				setError(null); // Reset error when closing
+			}, 300);
 			return () => clearTimeout(timer);
 		}
 	}, [props.isOpen]);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsSubmitting(true);
+		setError(null);
+
+		try {
+			console.log("Submitting absence data:", formData);
+			await AuthService.registerAbsence(formData);
+			props.onClose(); // Close modal on success
+			// Reset form
+			setFormData({
+				matricule: "",
+				date: "",
+				class_name: "",
+				reason: "",
+			});
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Failed to record absence");
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
 	if (!isVisible) return null;
 
@@ -37,70 +87,90 @@ const Modal = (props: ModalProps) => {
 					isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-95"
 				}`}
 			>
-				<h2 className="font-semibold text-xl">Record New Absence</h2>
+				<h2 className="text-xl font-semibold">Record New Absence</h2>
 				<p className="mb-8 text-gray-500 opacity-70">
 					Enter the details for student absence
 				</p>
-				<form action="#" method="POST" id="myForm">
-					<label htmlFor="student" className="font-semibold">
+
+				{error && (
+					<div className="p-3 mb-4 text-sm text-red-600 bg-red-100 rounded-md">
+						{error}
+					</div>
+				)}
+
+				<form onSubmit={handleSubmit}>
+					<label htmlFor="matricule" className="font-semibold">
 						Student ID
 					</label>
-					<br />
 					<input
 						type="text"
-						name="student"
+						id="matricule"
+						name="matricule"
+						value={formData.matricule}
+						onChange={handleChange}
 						placeholder="Enter student ID"
-						className="p-3 text-sm border rounded border-gray-200 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-4 text-sm border border-gray-200 rounded focus:outline-green-600"
+						required
 					/>
-					<br />
+
 					<label htmlFor="date" className="font-semibold">
 						Date
 					</label>
-					<br />
 					<input
 						type="date"
+						id="date"
 						name="date"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						value={formData.date}
+						onChange={handleChange}
+						className="w-full p-3 mb-4 text-sm border border-gray-300 rounded focus:outline-green-600"
+						required
 					/>
-					<br />
-					<label htmlFor="course" className="font-semibold">
+
+					<label htmlFor="class_name" className="font-semibold">
 						Course
 					</label>
-					<br />
 					<input
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
 						type="text"
-						name="course"
+						id="class_name"
+						name="class_name"
+						value={formData.class_name}
+						onChange={handleChange}
 						placeholder="Enter course Name"
+						className="w-full p-3 mb-4 text-sm border border-gray-300 rounded focus:outline-green-600"
+						required
 					/>
-					<br />
+
 					<label htmlFor="reason" className="font-semibold">
-						Reason(Optional)
+						Reason (Optional)
 					</label>
-					<br />
 					<input
 						type="text"
+						id="reason"
 						name="reason"
+						value={formData.reason || ""}
+						onChange={handleChange}
 						placeholder="Enter reason for absence"
-						className="p-3 text-sm border rounded border-gray-300 w-full focus:outline-green-600 mb-2"
+						className="w-full p-3 mb-4 text-sm border border-gray-300 rounded focus:outline-green-600"
 					/>
-					<br />
+
+					<div className="flex justify-between mt-6">
+						<button
+							type="button"
+							onClick={props.onClose}
+							disabled={isSubmitting}
+							className="w-20 h-10 p-2 font-sans text-sm font-semibold transition-colors duration-300 bg-white border rounded hover:bg-gray-200 disabled:opacity-50"
+						>
+							Cancel
+						</button>
+						<button
+							type="submit"
+							disabled={isSubmitting}
+							className="w-40 h-10 p-2 font-sans text-sm font-semibold text-white transition-colors duration-300 bg-green-700 rounded hover:bg-green-800 disabled:opacity-50 disabled:cursor-not-allowed"
+						>
+							{isSubmitting ? "Processing..." : "Record Absence"}
+						</button>
+					</div>
 				</form>
-				<div className="flex justify-between mt-6">
-					<button
-						onClick={props.onClose}
-						className="bg-white border font-sans text-sm font-semibold p-2 rounded w-20 h-10 hover:bg-gray-200 transition-colors duration-300"
-					>
-						Cancel
-					</button>
-					<button
-						form="myForm"
-						type="submit"
-						className="bg-green-700 font-sans text-sm font-semibold text-white p-2 rounded w-40 h-10 hover:bg-green-800 transition-colors duration-300"
-					>
-						Record Absence
-					</button>
-				</div>
 			</div>
 		</div>
 	);

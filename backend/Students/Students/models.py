@@ -36,7 +36,7 @@ class Student(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
-
+    guardianEmail = models.EmailField(blank=True, null=True)
     matricule = models.CharField(max_length=20, unique=True)
     major = models.CharField(max_length=100, blank=True, null=True)
     
@@ -54,3 +54,14 @@ class Staff(models.Model):
     
     def __str__(self):
         return self.user.get_full_name()
+    
+
+class Absences(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date = models.DateField()
+    class_name = models.CharField(max_length=100)
+    reason = models.TextField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f"{self.student.user.get_full_name()} - {self.date}"

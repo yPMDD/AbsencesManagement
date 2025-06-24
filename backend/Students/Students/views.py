@@ -12,7 +12,9 @@ from rest_framework import status
 from .serializers import StudentRegistrationSerializer
 from .serializers import StudentSerializer
 from .models import Student
+from .serializers import AbsenceSerializer, AbsencesSerializer ,MiniAbsencesSerializer
 from rest_framework.renderers import JSONRenderer
+from .models import Absences
 import json
 
 @require_GET
@@ -45,6 +47,18 @@ def login_view(request):
             )
             if user is not None:
                 login(request, user)
+                if user.role == 'Staff':
+                    return JsonResponse({
+                        'authenticated': True,
+                        'user': {
+                            'id': user.id,
+                            'username': user.username,
+                            'email': user.email,
+                            'role': user.role,
+                            'full_name': user.get_full_name(),
+                            
+                        }
+                    })
                 return JsonResponse({
                     'authenticated': True,
                     'user': {
@@ -52,8 +66,12 @@ def login_view(request):
                         'username': user.username,
                         'email': user.email,
                         'role': user.role,
+                        'major': user.student.major,
+                        'full_name': user.get_full_name(),
+                        'matricule': user.student.matricule,
                         # Add other user fields as needed
-                    }
+                    },
+                    
                 })
             return JsonResponse({'authenticated': False}, status=400)
         except Exception as e:
@@ -103,3 +121,32 @@ def check_auth_view(request):
             }
         })
     return Response({'authenticated': False}, status=401)
+
+class AbsenceRegister(APIView):
+    def post(self, request):
+        serializer = AbsenceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"success": "absence registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class AbsenceListView(APIView):
+
+    def get(self, request):
+        absences = Absences.objects.all()
+        serializer = AbsencesSerializer(absences, many=True)
+        print("Absences data:", serializer.data)
+        return Response({'absences': serializer.data})
+    
+
+class AbsencesByMatricule(APIView):
+    def get(self, request, id):
+        try:
+            student = Student.objects.get(user_id=id)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        absences = Absences.objects.filter(student=student)
+        serializer = MiniAbsencesSerializer(absences, many=True)
+        return Response({'absences': serializer.data}, status=status.HTTP_200_OK)

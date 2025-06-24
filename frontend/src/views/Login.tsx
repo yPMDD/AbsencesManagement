@@ -39,6 +39,7 @@ const Login: React.FC = () => {
 				formData.password
 			);
 			console.log("user data:", response);
+			localStorage.setItem("user", JSON.stringify(response));
 			// Redirect based on role
 			if (response.user.role === "Staff") {
 				console.log("Staff user logged in");
@@ -59,13 +60,13 @@ const Login: React.FC = () => {
 
 	return (
 		<>
-			<div className="flex min-h-screen items-center justify-center px-6 py-12 lg:px-8">
+			<div className="flex items-center justify-center min-h-screen px-6 py-12 lg:px-8">
 				<div className="w-full max-w-md">
 					<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 						<img
 							alt="Emsi logo"
 							src="images/emsiLogo.png"
-							className="mx-auto h-18 w-auto"
+							className="w-auto mx-auto h-18"
 						/>
 					</div>
 
@@ -74,7 +75,7 @@ const Login: React.FC = () => {
 							{/* <div>
 								<label
 									htmlFor="city"
-									className="block text-sm/6 font-medium text-gray-900"
+									className="block font-medium text-gray-900 text-sm/6"
 								>
 									Ville
 								</label>
@@ -102,7 +103,7 @@ const Login: React.FC = () => {
 							<div>
 								<label
 									htmlFor="matricule"
-									className="block text-sm/6 font-medium text-gray-900"
+									className="block font-medium text-gray-900 text-sm/6"
 								>
 									Matricule
 								</label>
@@ -114,7 +115,7 @@ const Login: React.FC = () => {
 										value={formData.username}
 										onChange={handleChange}
 										required
-										className="block w-full  outline-none rounded-md border border-gray-300 bg-white px-3 py-2 text-base text-gray-900 shadow-sm outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-600 focus:outline-2 focus:-outline-offset-2 outline-none focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
+										className="block w-full px-3 py-2 text-base text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm outline-none outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:border-green-600 focus:outline-2 focus:-outline-offset-2 focus:ring-1 focus:ring-green-500 focus:outline-none sm:text-sm/6"
 									/>
 								</div>
 							</div>
@@ -123,7 +124,7 @@ const Login: React.FC = () => {
 								<div className="flex items-center justify-between">
 									<label
 										htmlFor="password"
-										className="block text-sm/6 font-medium text-gray-900"
+										className="block font-medium text-gray-900 text-sm/6"
 									>
 										Mot de passe
 									</label>
@@ -142,7 +143,7 @@ const Login: React.FC = () => {
 											onFocus={handleFocus}
 											onBlur={() => setIsFocused(false)}
 											required
-											className="p-2 outline-none text-sm border-none rounded border-gray-300 w-full"
+											className="w-full p-2 text-sm border-gray-300 border-none rounded outline-none"
 											placeholder="Enter your password"
 										/>
 										<button

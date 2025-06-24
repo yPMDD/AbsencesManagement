@@ -1,36 +1,62 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import absenceData from "../Absences.json";
 import Modal from "../components/Modal";
-import { useState } from "react";
 import SearchIcon from "../ui/SearchIcon";
+import { useEffect, useState } from "react";
+import { AuthService } from "../services/authService";
 
 interface AbsenceRecord {
-	id: string;
+	class_name: string;
 	date: string;
-	student: string;
-	studentId: string;
-	course: string;
+	full_name: string;
+	matricule: string;
 	reason: string;
 }
 
 const Absences = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
+	const [absences, setAbsences] = useState<AbsenceRecord[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 
-	// Ensure absenceData.absences exists and has the correct structure
-	const allAbsences: AbsenceRecord[] = absenceData?.absences || [];
+	useEffect(() => {
+		const fetchAbsences = async () => {
+			try {
+				const response = await AuthService.getAbsences();
+				console.log("Fetched absences:", response);
+				setAbsences(response.absences || []);
+			} catch (err) {
+				console.error("Error fetching absences:", err);
+				setAbsences([]);
+			} finally {
+				setIsLoading(false);
+			}
+		};
 
-	// Enhanced filtering function
-	const filteredAbsences = allAbsences.filter((absence) => {
+		fetchAbsences();
+	}, []);
+
+	const filteredAbsences = absences.filter((absence) => {
 		const searchText = searchTerm.toLowerCase();
 		return (
-			absence.student.toLowerCase().includes(searchText) ||
-			absence.studentId.toLowerCase().includes(searchText) ||
-			absence.course.toLowerCase().includes(searchText) ||
+			absence.full_name.toLowerCase().includes(searchText) ||
+			absence.matricule.toLowerCase().includes(searchText) ||
+			absence.class_name.toLowerCase().includes(searchText) ||
 			absence.reason.toLowerCase().includes(searchText)
 		);
 	});
+
+	if (isLoading) {
+		return (
+			<>
+				<Header />
+				<div className="p-4 mt-20 text-center ml-80 mr-80">
+					Loading absences...
+				</div>
+				<Footer />
+			</>
+		);
+	}
 
 	return (
 		<>
@@ -39,7 +65,7 @@ const Absences = () => {
 			<div className="p-4 ml-80 mr-80">
 				<div className="flex mt-20 gap-80">
 					<div className="pt-4 pb-4">
-						<h1 className="text-2xl font-bold mb-2">Absence Management</h1>
+						<h1 className="mb-2 text-2xl font-bold">Absence Management</h1>
 						<p className="mb-6">Record and track student absences</p>
 					</div>
 					<div className="flex gap-4 ml-60">
@@ -50,15 +76,14 @@ const Absences = () => {
 									value={searchTerm}
 									onChange={(e) => setSearchTerm(e.target.value)}
 									placeholder="Search Absences..."
-									className="input text-sm border border-gray-300 outline-none focus:outline-green-600 pl-3 rounded w-60 h-10 transition-colors duration-200"
+									className="h-10 pl-3 text-sm transition-colors duration-200 border border-gray-300 rounded outline-none input focus:outline-green-600 w-60"
 								/>
-
 								<SearchIcon />
 							</div>
 						</div>
 						<button
 							onClick={() => setIsModalOpen(true)}
-							className="bg-green-700 font-sans text-sm font-semibold text-white p-2 rounded w-40 h-10 mt-7 hover:bg-green-800 transition-colors duration-300"
+							className="w-40 h-10 p-2 font-sans text-sm font-semibold text-white transition-colors duration-300 bg-green-700 rounded mt-7 hover:bg-green-800"
 						>
 							Record New Absence
 						</button>
@@ -70,40 +95,42 @@ const Absences = () => {
 					<table className="min-w-full divide-y divide-gray-200">
 						<thead>
 							<tr className="bg-green-200 bg-opacity-25">
-								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-sm font-semibold text-left text-green-900">
 									DATE
 								</th>
-								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-sm font-semibold text-left text-green-900">
 									STUDENT
 								</th>
-								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-sm font-semibold text-left text-green-900">
 									STUDENT ID
 								</th>
-								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-sm font-semibold text-left text-green-900">
 									COURSE
 								</th>
-								<th className="px-4 py-2 text-left text-sm text-green-900 font-semibold">
+								<th className="px-4 py-2 text-sm font-semibold text-left text-green-900">
 									REASON
 								</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-gray-200 text-sm">
+						<tbody className="text-sm divide-y divide-gray-200">
 							{filteredAbsences.length > 0 ? (
-								filteredAbsences.map((absence) => (
+								filteredAbsences.map((absence, index) => (
 									<tr
-										key={`${absence.id}`} // Unique key combination
+										key={`${absence.matricule}-${absence.date}-${index}`}
 										className="hover:bg-gray-100"
 									>
 										<td className="p-3">{absence.date}</td>
-										<td className="p-3 font-semibold">{absence.student}</td>
-										<td className="p-3">{absence.studentId}</td>
-										<td className="p-3">{absence.course}</td>
-										<td className="p-3">{absence.reason}</td>
+										<td className="p-3 font-semibold">{absence.full_name}</td>
+										<td className="p-3">{absence.matricule}</td>
+										<td className="p-3">{absence.class_name}</td>
+										<td className="p-3">
+											{absence.reason ? absence.reason : "	—"}
+										</td>
 									</tr>
 								))
 							) : (
 								<tr>
-									<td colSpan={5} className="text-center p-4">
+									<td colSpan={5} className="p-4 text-center">
 										No absences found matching "{searchTerm}"
 									</td>
 								</tr>
@@ -113,7 +140,7 @@ const Absences = () => {
 				</div>
 
 				<p className="mt-4 text-sm text-gray-600">
-					Showing {filteredAbsences.length} of {allAbsences.length} absences
+					Showing {filteredAbsences.length} of {absences.length} absences
 				</p>
 			</div>
 
