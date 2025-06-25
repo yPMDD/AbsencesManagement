@@ -65,8 +65,8 @@ const Login: React.FC = () => {
 					<div className="sm:mx-auto sm:w-full sm:max-w-sm">
 						<img
 							alt="Emsi logo"
-							src="images/emsiLogo.png"
-							className="w-auto mx-auto h-18"
+							src="images/transEmsi.png"
+							className="w-auto mx-auto h-14"
 						/>
 					</div>
 
@@ -105,7 +105,7 @@ const Login: React.FC = () => {
 									htmlFor="matricule"
 									className="block font-medium text-gray-900 text-sm/6"
 								>
-									Matricule
+									Email
 								</label>
 								<div className="mt-2">
 									<input

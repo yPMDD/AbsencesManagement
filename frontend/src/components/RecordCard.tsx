@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 const RecordCard = () => {
+	const navigate = useNavigate();
 	return (
-		<div className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  ">
-			<span className=" rounded font-semibold ">
+		<div
+			onClick={() => navigate("/Absences")}
+			className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  "
+		>
+			<span className="font-semibold rounded ">
 				<svg
 					width="30px"
 					height="30px"

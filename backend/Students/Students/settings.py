@@ -47,7 +47,22 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'Students',
+    'mailer'
 ]
+
+import certifi
+import ssl
+
+EMAIL_BACKEND = 'Students.backends.email_backend.EmailBackend'  # Custom email backend if needed
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'saad989011@gmail.com'  # Your email address
+EMAIL_HOST_PASSWORD = 'qkzrxdfuufozqozb' #email_mdp # Your email password or app password
+DEFAULT_FROM_EMAIL = 'saad989011@gmail.com'  # Same as EMAIL_HOST_USER
+
+
 
 
 DATABASES = {
@@ -78,7 +93,6 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

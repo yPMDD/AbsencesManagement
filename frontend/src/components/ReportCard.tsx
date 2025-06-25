@@ -1,7 +1,15 @@
+import ReactModal from "react-modal";
+import { useState } from "react";
+import GenerateReportModal from "./GenerateReportModal";
 const ReportCard = () => {
+	const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
 	return (
-		<div className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  ">
-			<span className=" font-semibold ">
+		<div
+			onClick={() => setIsReportModalOpen(true)}
+			className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  "
+		>
+			<span className="font-semibold ">
 				<svg
 					className="rounded h-7"
 					viewBox="0 0 24 24"
@@ -27,6 +35,18 @@ const ReportCard = () => {
 				</svg>
 			</span>
 			<span className="pl-3 font-semibold ">Generate Reports</span>
+			<ReactModal
+				isOpen={isReportModalOpen}
+				onRequestClose={() => setIsReportModalOpen(false)}
+				ariaHideApp={false}
+				className="bg-white border-none outline-none p-6 md:p-8 rounded-lg max-w-[500px] w-full mx-4 md:mx-auto shadow-xl transform transition-all duration-300 ease-out"
+				overlayClassName="fixed border-none outline-none inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
+				closeTimeoutMS={200}
+			>
+				<div className="relative">
+					<GenerateReportModal closeModal={() => setIsReportModalOpen(false)} />
+				</div>
+			</ReactModal>
 		</div>
 	);
 };

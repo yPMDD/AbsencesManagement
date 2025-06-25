@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 const StudentsCard = () => {
+	const navigate = useNavigate();
 	return (
-		<div className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  ">
-			<span className=" rounded font-semibold ">
+		<div
+			onClick={() => navigate("/Students")}
+			className="flex cursor-pointer w-80 rounded bg-gray-100 p-6 shadow-md basis-[calc(31%-0px)] transition-all duration-300 hover:-translate-y-2 hover:shadow-lg  "
+		>
+			<span className="font-semibold rounded ">
 				<svg
 					className="h-6 "
 					fill="#72a782"

@@ -1,39 +1,39 @@
 {
 	"absences": [
 		{
-			"id": "S1001",
-			"studentName": "Charlie Brown",
+			"id": "T-2024-0012",
+			"studentName": "Saad AT",
 			"date": "15/05/2023",
 			"className": "Quantum Mechanics",
-			"email": "CharlieBrown@gmail.com"
+			"email": "Saad@gmail.com"
 		},
 		{
-			"id": "S1002",
-			"studentName": "Student User",
+			"id": "C-2024-0013",
+			"studentName": "Taha AKK",
 			"date": "12/05/2023",
-			"className": "Molecular Biology",
-			"email": "Student.User@gmail.com"
+			"className": "Machine Learning",
+			"email": "Taha@gmail.com"
 		},
 		{
-			"id": "S1003",
-			"studentName": "Alice Johnson",
+			"id": "R-2024-0014",
+			"studentName": "Laaribi Ali",
 			"date": "10/05/2023",
 			"className": "Data Structures",
-			"email": "Alice.Johnson@gmail.com"
+			"email": "Aligmail.com"
 		},
 		{
-			"id": "S1004",
-			"studentName": "Bob Smith",
+			"id": "C-2024-0012",
+			"studentName": "Saad AT",
 			"date": "05/05/2023",
 			"className": "Calculus",
-			"email": "Bob.smith@gmail.com"
+			"email": "Saad@gmail.com"
 		},
 		{
-			"id": "S1005",
-			"studentName": "Mc Donald",
+			"id": "C-2024-0013",
+			"studentName": "Taha AKK",
 			"date": "02/05/2023",
 			"className": "Biology 101",
-			"email": "Mc.Donald@gmail.com"
+			"email": "Taha@gmail.com"
 		}
 	]
 }

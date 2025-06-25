@@ -43,6 +43,12 @@ interface AuthResponse {
 	user?: User;
 }
 
+interface AbsenceReportData {
+	student_id?: number;
+	course_id?: number;
+	format: "pdf" | "xlsx";
+}
+
 const api = axios.create({
 	baseURL: "http://localhost:8000/api/",
 	withCredentials: true,
@@ -75,6 +81,16 @@ const AuthService = {
 			},
 		});
 		console.log("Absence registration response:", response.data);
+		return response.data;
+	},
+	generateReport: async (reportData: AbsenceReportData): Promise<void> => {
+		const csrfToken = await AuthService.getCsrfToken();
+		const response = await api.post("absences/report/", reportData, {
+			responseType: "blob",
+			headers: { "X-CSRFToken": csrfToken },
+		});
+		console.log("Generating report with:", { reportData });
+
 		return response.data;
 	},
 
@@ -166,15 +182,5 @@ const AuthService = {
 		}
 	},
 };
-
-api.interceptors.request.use(async (config) => {
-	if (
-		!["get", "head", "options"].includes(config.method?.toLowerCase() || "")
-	) {
-		const token = await AuthService.getCsrfToken();
-		config.headers["X-CSRFToken"] = token;
-	}
-	return config;
-});
 
 export { AuthService, type User, type AuthResponse, type Student };

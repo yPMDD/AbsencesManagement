@@ -154,6 +154,9 @@ const Students = () => {
 													studentId={student.id}
 													studentName={student.full_name}
 												/>
+												<button className="border bg-white hover:bg-yellow-100 border-yellow-600 border-opacity-40 text-yellow-600 font-medium py-[6px] px-4 rounded">
+													Edit
+												</button>
 											</div>
 										</td>
 									</tr>
