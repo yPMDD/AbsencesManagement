@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remove all toast icons */
+.Toastify__toast-icon {
+	display: none !important;
+}
+
+/* If you only want to remove specific icons: */
+.Toastify__toast--success .Toastify__toast-icon,
+.Toastify__toast--error .Toastify__toast-icon,
+.Toastify__toast--warning .Toastify__toast-icon,
+.Toastify__toast--info .Toastify__toast-icon {
+	display: none !important;
+}
+/* Increase top margin for the toast container */
+.Toastify__toast-container {
+	margin-top: 60px !important; /* Adjust as needed */
+}
+
+/* OR if you want to target a specific position (e.g., top-right) */
+.Toastify__toast-container--top-right {
+	top: 2em !important; /* Adjust as needed */
+}
+.Toastify__toast {
+	border-radius: 12px !important;
+	padding: 16px 24px !important;
+	min-height: 64px !important;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+	font-family: "Inter", sans-serif !important;
+	font-size: 15px;
+	font-weight: bold;
+	color: #333 !important; /* Adjust text color as needed */
+}

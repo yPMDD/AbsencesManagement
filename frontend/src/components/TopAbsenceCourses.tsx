@@ -1,11 +1,5 @@
-const AbsenceBarChart = () => {
-	const courses = [
-		{ name: "Programming C", absences: 3 },
-		{ name: "Data Structures", absences: 1 },
-		{ name: "Calculus", absences: 2 },
-		{ name: "OOP", absences: 1 },
-		{ name: "Physics", absences: 1 },
-	];
+const AbsenceBarChart = (props) => {
+	const courses = props.props || [];
 
 	// Sort courses by absences in descending order
 	const sortedCourses = [...courses].sort((a, b) => b.absences - a.absences);

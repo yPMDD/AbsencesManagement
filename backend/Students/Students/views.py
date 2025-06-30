@@ -12,7 +12,8 @@ from rest_framework import status
 from .serializers import StudentRegistrationSerializer
 from .serializers import StudentSerializer
 from .models import Student
-from .serializers import AbsenceSerializer, AbsencesSerializer ,MiniAbsencesSerializer
+from .serializers import AbsenceSerializer, AbsencesSerializer 
+from .serializers import  MiniAbsencesSerializer,AbsenceStatsSerializer
 from rest_framework.renderers import JSONRenderer
 from .models import Absences
 from django.http import HttpResponse
@@ -24,6 +25,7 @@ from django.utils.html import strip_tags
 from premailer import transform
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 import json
 
@@ -123,7 +125,7 @@ class StudentListView(APIView):
     def get(self, request):
         students = Student.objects.all().select_related('user')
         serializer = StudentSerializer(students, many=True)
-        
+        print("Students data:", serializer.data)
         return Response(serializer.data)
 
 
@@ -265,3 +267,48 @@ class AbsenceReportView(APIView):
         response['Content-Disposition'] = 'attachment; filename=absence_report.xlsx'
         response['Content-Disposition'] = 'attachment; filename=absence_report.xlsx'
         return response
+
+
+from django.db.models import Count
+from rest_framework.response import Response
+
+class getAbsencesData(APIView):
+    authentication_classes = []
+    permission_classes = []
+    def get(self, request):
+        # Get all students and absences
+        students = Student.objects.all()
+        absences = Absences.objects.all()
+        
+        # Calculate metrics
+        total_students = students.count()
+        total_absences = absences.count()
+        
+        # Students with at least one absence
+        students_with_absences = absences.values('student_id').distinct().count()
+        
+        # Absence rate (absences per student)
+        absence_rate = round(total_absences / total_students, 2) if total_students > 0 else 0
+        
+        # Top 5 courses with most absences
+        top_courses = absences.values('class_name').annotate(
+            absence_count=Count('id')
+        ).order_by('-absence_count')[:5]
+        
+        # Latest 5 absences
+        latest_absences = absences.order_by('-date')[:5]
+        latest_absences_serializer = AbsenceStatsSerializer(latest_absences, many=True)
+        
+        # Prepare response data
+        response_data = {
+            'school_metrics': {
+                'total_students': total_students,
+                'total_absences': total_absences,
+                'students_with_absences': students_with_absences,
+                'absence_rate': absence_rate,
+            },
+            'top_courses': list(top_courses),
+            'latest_absences': latest_absences_serializer.data
+        }
+        
+        return Response(response_data)

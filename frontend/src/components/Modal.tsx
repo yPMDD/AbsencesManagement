@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthService } from "../services/authService"; // Adjust import path as needed
+import { toast } from "react-toastify";
 
 interface ModalProps {
 	isOpen: boolean;
@@ -63,6 +64,7 @@ const Modal = (props: ModalProps) => {
 				class_name: "",
 				reason: "",
 			});
+			toast.success("Absence recorded successfully!");
 		} catch (err) {
 			setError(err instanceof Error ? err.message : "Failed to record absence");
 		} finally {
@@ -94,7 +96,7 @@ const Modal = (props: ModalProps) => {
 
 				{error && (
 					<div className="p-3 mb-4 text-sm text-red-600 bg-red-100 rounded-md">
-						{error}
+						Check the entered data, please.
 					</div>
 				)}
 

@@ -129,7 +129,7 @@ const Modal = (props: ModalProps) => {
 
 				{error && (
 					<div className="p-2 mb-4 text-red-700 bg-red-100 rounded">
-						{error}
+						Check your inputs, please!
 					</div>
 				)}
 

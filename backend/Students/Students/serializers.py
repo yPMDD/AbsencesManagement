@@ -105,3 +105,12 @@ class MiniAbsencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Absences
         fields = '__all__'
+
+class AbsenceStatsSerializer(serializers.ModelSerializer):
+    matricule = serializers.CharField(source='student.matricule', read_only=True)
+    full_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    class Meta:
+        model = Absences
+        fields = ['date', 'class_name', 'reason', 'full_name', 'matricule']
+
+    

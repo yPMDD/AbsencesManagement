@@ -20,7 +20,7 @@ from .views import StudentRegistrationView
 from .views import StudentDeleteView
 from .views import StudentListView
 from .views import AbsenceRegister
-from .views import AbsenceListView, AbsencesByMatricule,AbsenceReportView
+from .views import AbsenceListView, AbsencesByMatricule,AbsenceReportView,getAbsencesData
 
 urlpatterns = [
     path('api/auth/csrf/', views.get_csrf_token, name='get-csrf'),
@@ -34,4 +34,5 @@ urlpatterns = [
     path('api/absences/', AbsenceListView.as_view(), name='absences-list'),
     path('api/absences/<int:id>/', AbsencesByMatricule.as_view(), name='student-detail'),
     path('api/absences/report/', AbsenceReportView.as_view(), name='generate_report'),
+    path('api/absences_stats/', getAbsencesData.as_view(), name='absence-report'),
 ]

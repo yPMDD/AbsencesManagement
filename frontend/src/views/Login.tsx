@@ -49,7 +49,7 @@ const Login: React.FC = () => {
 				navigate("/SDashboard");
 			}
 
-			toast.success("Login successful!");
+			toast.success("Login successful !");
 		} catch (error) {
 			toast.error("Login failed. Please check your credentials.");
 			console.error("Login error:", error);
