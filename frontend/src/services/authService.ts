@@ -93,6 +93,25 @@ const AuthService = {
 
 		return response.data;
 	},
+	updateStudent: async (studentId: number, studentData: Partial<Student>) => {
+		try {
+			const csrfToken = await AuthService.getCsrfToken();
+			const response = await axios.patch(
+				`http://localhost:8000/api/students/${studentId}/update/`,
+				studentData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						"X-CSRFToken": csrfToken,
+					},
+				}
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Error updating student:", error);
+			throw error;
+		}
+	},
 
 	getStudents: async (): Promise<Student[]> => {
 		const response = await api.get("students/");

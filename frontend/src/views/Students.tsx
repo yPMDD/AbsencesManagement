@@ -6,6 +6,7 @@ import SearchIcon from "../ui/SearchIcon";
 import { AuthService } from "../services/authService";
 import DeleteButton from "../components/DeleteButton";
 import ReactModal from "react-modal";
+import ModalEditStudent from "../components/ModalEditStudent";
 
 interface Student {
 	id: number;
@@ -13,6 +14,9 @@ interface Student {
 	full_name: string;
 	email: string;
 	major: string;
+	guardianEmail?: string;
+	phone_number?: string;
+	city?: string;
 }
 interface AbsenceData {
 	matricule: string;
@@ -30,6 +34,9 @@ const Students = () => {
 	const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 	const [studentAbsences, setStudentAbsences] = useState<AbsenceData[]>([]);
 	const [isSModalOpen, setIsSModalOpen] = useState(false);
+	const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
+	const [studentToEdit, setStudentToEdit] = useState<Student | null>(null);
+
 	const handleViewAbsences = async (student: Student) => {
 		try {
 			setSelectedStudent(student);
@@ -41,6 +48,17 @@ const Students = () => {
 		} catch (error) {
 			console.error("Failed to fetch absences", error);
 		}
+	};
+
+	const handleEditClick = (student: Student) => {
+		console.log("Selected student:", student);
+		setStudentToEdit(student);
+		setIsModifyModalOpen(true);
+	};
+	const handleStudentUpdated = (updatedStudent: Student) => {
+		setStudents(
+			students.map((s) => (s.id === updatedStudent.id ? updatedStudent : s))
+		);
 	};
 
 	useEffect(() => {
@@ -154,7 +172,11 @@ const Students = () => {
 													studentId={student.id}
 													studentName={student.full_name}
 												/>
-												<button className="border bg-white hover:bg-yellow-100 border-yellow-600 border-opacity-40 text-yellow-600 font-medium py-[6px] px-4 rounded">
+												<button
+													onClick={() => handleEditClick(student)}
+													popoverTarget="modal"
+													className="border bg-white hover:bg-yellow-100 border-yellow-600 border-opacity-40 text-yellow-600 font-medium py-[6px] px-4 rounded"
+												>
 													Edit
 												</button>
 											</div>
@@ -175,7 +197,19 @@ const Students = () => {
 				<p className="mt-4 text-sm text-gray-600">
 					Showing {filteredStudents.length} of {students.length} students
 				</p>
+
+				{/* Single instance of the edit modal outside the table */}
+				<ModalEditStudent
+					isOpen={isModifyModalOpen}
+					onClose={() => {
+						setIsModifyModalOpen(false);
+						setStudentToEdit(null);
+					}}
+					selectedStudent={studentToEdit}
+					onStudentUpdated={handleStudentUpdated}
+				/>
 			</div>
+
 			<ReactModal
 				isOpen={isSModalOpen}
 				onRequestClose={() => setIsSModalOpen(false)}

@@ -26,9 +26,15 @@ from premailer import transform
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
+from .serializers import StudentPasswordChangeSerializer ,StudentEditSerializer
 import json
-
+from rest_framework.exceptions import AuthenticationFailed
+from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.core.exceptions import ValidationError
+from rest_framework import authentication, permissions ,viewsets
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
 @require_GET
 @permission_classes([AllowAny])
 @ensure_csrf_cookie
@@ -312,3 +318,87 @@ class getAbsencesData(APIView):
         }
         
         return Response(response_data)
+    
+
+
+class StudentPasswordChangeView(APIView):
+    authentication_classes = []
+    permission_classes = []
+    
+    def post(self, request):
+        serializer = StudentPasswordChangeSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Password changed successfully"},
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+User = get_user_model()
+
+class StudentPasswordChangeView(APIView):
+    authentication_classes = [SessionAuthentication]  # Explicitly declare
+    permission_classes = [IsAuthenticated]  # This makes your manual check redundant
+    def post(self, request):
+        # 1. Verify user is authenticated (not AnonymousUser)
+        
+
+        # 2. Get data from request
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        # 3. Validate inputs
+        if not new_password or not confirm_password:
+            return Response(
+                {"error": "Both password fields are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if new_password != confirm_password:
+            return Response(
+                {"error": "Passwords do not match"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            validate_password(new_password, user=request.user)
+        except ValidationError as e:
+            return Response(
+                {"error": "\n".join(e.messages)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # 4. Update password
+        try:
+            request.user.set_password(new_password)
+            request.user.save()
+            
+            # Maintain session after password change
+            update_session_auth_hash(request, request.user)
+            
+            return Response(
+                {"message": "Password updated successfully"},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+@ensure_csrf_cookie        
+@api_view(['POST'])
+def StudentViewSet(request, id):
+    queryset = Student.objects.all()
+    student = get_object_or_404(queryset, id=id)
+    serializer = StudentEditSerializer(student)
+    serializer = StudentEditSerializer(student, data=request.data, partial=True)   
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=400)

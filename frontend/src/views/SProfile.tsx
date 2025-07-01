@@ -1,6 +1,6 @@
 import Footer from "../components/Footer";
 import Sheader from "../components/Sheader";
-
+import ChangePasswordForm from "../components/ChangePasswordForm";
 const SProfile = () => {
 	const user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -41,7 +41,7 @@ const SProfile = () => {
 						<h3 className="mb-4 text-xl font-semibold text-gray-800">
 							Change Password
 						</h3>
-						<form className="space-y-4">
+						{/* <form className="space-y-4">
 							<div>
 								<label
 									for="new-password"
@@ -76,7 +76,8 @@ const SProfile = () => {
 							>
 								Update Password
 							</button>
-						</form>
+						</form> */}
+						<ChangePasswordForm />
 					</div>
 				</div>
 			</div>

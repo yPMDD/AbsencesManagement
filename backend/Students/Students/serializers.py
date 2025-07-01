@@ -6,12 +6,65 @@ from datetime import datetime
 from .models import Student
 from .models import Absences
 import random
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+
 
 random_number = random.randint(1, 100)
 student_count = Student.objects.count()
 next = student_count + random_number
 current_year = datetime.now().year
 CustomUser = get_user_model()
+
+
+# serializers.py
+
+
+User = get_user_model()
+class StudentEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = [
+            'id',
+            'matricule',
+            'full_name',
+            'email',
+            'major',
+            'guardianEmail',
+            'phone_number',
+            'city'
+        ]
+        extra_kwargs = {
+            'matricule': {'required': False},
+            'full_name': {'required': False},
+            'email': {'required': False}
+        }
+
+
+class StudentPasswordChangeSerializer(serializers.Serializer):
+    new_password = serializers.CharField(
+        required=True,
+        write_only=True,
+        validators=[validate_password]
+    )
+    confirm_password = serializers.CharField(
+        required=True,
+        write_only=True
+    )
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match")
+        return attrs
+
+    def save(self, **kwargs):
+        
+        user = self.context['request'].user
+        if user.is_anonymous:
+            raise serializers.ValidationError("User is not authenticated.")
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
 
 class StudentRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150, required=True)

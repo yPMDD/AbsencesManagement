@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ConfirmationDialog from "./ConfirmationDialog ";
 import { AuthService } from "../services/authService";
+import { toast } from "react-toastify";
 
 interface DeleteButtonProps {
 	studentId: number;
@@ -26,12 +27,13 @@ const DeleteButton = ({
 			await AuthService.deleteStudent(studentId);
 			setIsDialogOpen(false);
 			if (onDeleted) onDeleted();
+			window.location.reload();
+			toast.success(`${studentName} has been deleted successfully.`);
 		} catch (err) {
 			console.error("Delete error:", err);
-			setError(err instanceof Error ? err.message : "Failed to delete student");
+			toast.error(`Failed to delete ${studentName}. Please try again.`);
 		} finally {
 			setIsDeleting(false);
-			window.location.reload();
 		}
 	};
 
